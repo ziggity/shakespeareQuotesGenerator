@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamlet Quote Generator</title>
+    <style>
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: #2c3e50;
+            padding: 1rem;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-family: 'Crimson Text', Georgia, serif;
+        }
+        
+        .quote-container {
+            margin: 2rem 0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .quote {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            white-space: pre-line;
+        }
+        
+        .attribution {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        button:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hamlet Quote Generator</h1>
+        <div class="quote-container">
+            <div class="quote" id="quote"></div>
+            <div class="attribution" id="attribution"></div>
+        </div>
+        <button onclick="generateQuote()">New Quote</button>
+    </div>
+
+    <script>
+        const quotes = [
+            { text: "Listen to many, speak to a few.", attribution: "Polonius, Act 1 Scene 3" },
+            { text: "Neither a borrower nor a lender be,\nFor loan oft loses both itself and friend,\nAnd borrowing dulls the edge of husbandry.", attribution: "Polonius, Act 1 Scene 3" },
+            { text: "This above all: to thine own self be true,\nAnd it must follow, as the night the day,\nThou canst not then be false to any man.", attribution: "Polonius, Act 1 Scene 3" },
+            { text: "...though I am native here\nAnd to the manner born, it is a custom\nMore honoured in the breach than the observance.", attribution: "Hamlet, Act 1 Scene 4" },
+            { text: "Something is rotten in the state of Denmark.", attribution: "Marcellus, Act 1 Scene 4" },
+            { text: "That one may smile and smile and be a villain.", attribution: "Hamlet, Act 1 Scene 5" },
+            { text: "There are more things in heaven and earth, Horatio,\nThan are dreamt of in our philosophy.", attribution: "Hamlet, Act 1 Scene 5" },
+            { text: "Brevity is the soul of wit.", attribution: "Polonius, Act 2 Scene 2" },
+            { text: "Though this be madness, yet there is method in't.", attribution: "Polonius, Act 2 Scene 2" },
+            { text: "There is nothing either good or bad but thinking makes it so.", attribution: "Hamlet, Act 2 Scene 2" },
+            { text: "O, what a rogue and peasant slave am I!", attribution: "Hamlet, Act 2 Scene 2" },
+            { text: "Doubt thou the stars are fire;\nDoubt that the sun doth move;\nDoubt truth to be a liar;\nBut never doubt I love.", attribution: "Polonius, Act 2 Scene 2" },
+            { text: "What a piece of work is a man! How noble in reason, how infinite in faculty! In form and moving how express and admirable! In action how like an Angel! in apprehension how like a god! The beauty of the world! The paragon of animals! And yet to me, what is this quintessence of dust? Man delights not me; no, nor Woman neither; though by your smiling you seem to say so..", attribution: "Hamlet, Act 2 Scene 2" },
+            { text: "To be, or not to be, that is the question.", attribution: "Hamlet, Act 3 Scene 1" },
+            { text: "God hath given you one face, and you make yourself another.", attribution: "Hamlet, Act 3 Scene 1" },
+            { text: "To die, to sleep –\nTo sleep, perchance to dream – ay, there's the rub,\nFor in this sleep of death what dreams may come…", attribution: "Hamlet, Act 3 Scene 1" },
+            { text: "The lady doth protest too much, methinks.", attribution: "Gertrude, Act 3 Scene 2" },
+            { text: "My words fly up, my thoughts remain below: Words without thoughts never to heaven go.", attribution: "Claudius, Act 3 Scene 3" },
+            { text: "I must be cruel only to be kind;\nThus bad begins, and worse remains behind.", attribution: "Hamlet, Act 3 Scene 4" },
+            { text: "How all occasions do inform against me, and spur my dull revenge.", attribution: "Hamlet, Act 2 Scene 4" },
+            { text: "Alas, poor Yorick! I knew him, Horatio: A fellow of infinite jest.", attribution: "Hamlet, Act 5 Scene 1" },
+            { text: "If it be now, 'tis not to come: if it be not to come, it will be now: if it be not now, yet it will come: the readiness is all.", attribution: "Hamlet, Act 5 Scene 2" },
+            { text: "The rest is silence.", attribution: "Hamlet, Act 5 Scene 2" },
+            { text: "Goodnight, sweet prince,\nAnd flights of angels sing thee to thy rest!", attribution: "Horatio, Act 5 Scene 2" },
+            { text: "Now cracks a noble heart. Good-night, sweet prince;\nAnd flights of angels sing thee to thy rest.", attribution: "Horatio, Act 5 Scene 2" },
+            { text: "Oh my offence is rank, it smells to heaven", attribution: "Claudius, Act 3 Scene 3" },
+            { text: "Now might I do it pat", attribution: "Hamlet, Act 3 Scene 3" }
+        ];
+
+        function generateQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+            
+            document.getElementById('quote').textContent = `"${quote.text}"`;
+            document.getElementById('attribution').textContent = quote.attribution;
+        }
+
+        // Generate a quote when the page loads
+        generateQuote();
+    </script>
+</body>
+</html>
